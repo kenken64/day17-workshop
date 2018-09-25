@@ -19,7 +19,8 @@ const sqlFindAllBooks = "SELECT * FROM books WHERE (name LIKE ?) || (author LIKE
 const sqlFindOneBook = "SELECT idbooks, name, author, publish_year, isbn FROM books WHERE idbooks=? ";
 console.log("DB USER : " + process.env.DB_USER);
 console.log("DB NAME : " + process.env.DB_NAME);
-app.use(express.static(path.join(__dirname, "/../dist/day17-client")));
+app.use(express.static(path.join(__dirname, "dist" , "day17-client")));
+//app.use(express.static(__dirname + "../dist/day17-client"));
 
 var pool = mysql.createPool({
     host: process.env.DB_HOST,
