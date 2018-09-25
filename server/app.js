@@ -2,9 +2,11 @@
 const express =  require("express"),
       mysql = require("mysql"),
       path = require('path'),
+      cors = require('cors'),
       bodyParser = require("body-parser");
 
 var app = express();
+app.use(cors());
 const NODE_PORT = process.env.PORT;
 
 const API_URI = "/api";
@@ -99,7 +101,8 @@ app.get(API_URI + "/books", (req, res)=>{
         var selectionType = req.query.selectionType;
         console.log(keyword);
         console.log(selectionType);
-        let finalCriteriaFromType = ['', '' ,parseInt(req.query.limit),parseInt(req.query.offset)];
+        
+        let finalCriteriaFromType = ['%', '%' , parseInt(req.query.limit), parseInt(req.query.offset)];
         if(selectionType == 'BT'){
             finalCriteriaFromType = [keyword, '' ,parseInt(req.query.limit),parseInt(req.query.offset)]
         }
