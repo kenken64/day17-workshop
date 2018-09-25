@@ -1,4 +1,4 @@
-//require('dotenv').config()
+require('dotenv').config()
 const express =  require("express"),
       mysql = require("mysql"),
       path = require('path'),
@@ -104,15 +104,15 @@ app.get(API_URI + "/books", (req, res)=>{
         
         let finalCriteriaFromType = ['%', '%' , parseInt(req.query.limit), parseInt(req.query.offset)];
         if(selectionType == 'BT'){
-            finalCriteriaFromType = [keyword, '' ,parseInt(req.query.limit),parseInt(req.query.offset)]
+            finalCriteriaFromType = ['%' + keyword + '%', '' ,parseInt(req.query.limit),parseInt(req.query.offset)]
         }
 
         if(selectionType == 'A'){
-            finalCriteriaFromType = ['', keyword ,parseInt(req.query.limit),parseInt(req.query.offset)]
+            finalCriteriaFromType = ['', '%' +keyword + '%',parseInt(req.query.limit),parseInt(req.query.offset)]
         }
 
         if(selectionType == 'B'){
-            finalCriteriaFromType = [keyword, keyword ,parseInt(req.query.limit),parseInt(req.query.offset)]
+            finalCriteriaFromType = ['%' + keyword + '%', '%' +keyword + '%' ,parseInt(req.query.limit),parseInt(req.query.offset)]
         }
         
         findAllBooks(finalCriteriaFromType)
