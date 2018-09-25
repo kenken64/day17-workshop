@@ -2,13 +2,9 @@
 const express =  require("express"),
       mysql = require("mysql"),
       path = require('path'),
-      cors = require('cors'),
       bodyParser = require("body-parser");
 
 var app = express();
-app.use(cors({
-
-}));
 const NODE_PORT = process.env.PORT;
 
 const API_URI = "/api";
