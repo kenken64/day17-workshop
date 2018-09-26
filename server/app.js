@@ -68,7 +68,16 @@ app.use(bodyParser.json());
 
 app.get(API_URI + "/films", (req, res)=>{
     findAllFilms().then((results)=>{
-        res.json(results);
+        console.log();
+        let finalResult = [];
+        
+        results.forEach((element)=>{
+            let value  = { title: "", url: ""};
+            value.title = element.title;
+            value.url = `/films/${element.film_id}`
+            finalResult.push(value);
+        });
+        res.json(finalResult);
     }).catch((error)=>{
         console.log(error);
         res.status(500).json(error);
