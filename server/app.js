@@ -1,13 +1,29 @@
 require('dotenv').config()
 const express =  require("express"),
       mysql = require("mysql"),
-      path = require('path'),
       cors = require('cors'),
+      multer = require('multer'),  
       bodyParser = require("body-parser");
 
 var app = express();
 app.use(cors());
 const NODE_PORT = process.env.PORT;
+
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, '/Users/phangty/Projects/day17-workshop/day17-client/server/uploads')
+    },
+    filename: function (req, file, cb) {
+      console.log(JSON.stringify(file));
+      var uploadFileTokens = file.originalname.split('.');
+      console.log(uploadFileTokens);
+      cb(null, uploadFileTokens[0] + '-' + Date.now() + '.'+ uploadFileTokens[uploadFileTokens.length-1])
+    },
+    fieldSize: 50 * 1024 * 1024
+})
+
+var upload = multer({ storage: storage })
 
 const API_URI = "/api";
 
@@ -17,10 +33,7 @@ const sqlFindAllBooks = "SELECT * FROM books WHERE (name LIKE ?) || (author LIKE
 const sqlFindOneBook = "SELECT idbooks, name, author, publish_year, isbn FROM books WHERE idbooks=? ";
 console.log("DB USER : " + process.env.DB_USER);
 console.log("DB NAME : " + process.env.DB_NAME);
-//app.use(express.static(path.join(__dirname, "dist" , "day17-client")));
-//app.use(express.static(__dirname + "../dist/day17-client"));
 console.log(__dirname);
-//app.use(express.static(__dirname + "/../dist/day17-client"))
 
 var pool = mysql.createPool({
     host: process.env.DB_HOST,
@@ -84,6 +97,25 @@ app.get(API_URI + "/films", (req, res)=>{
     });
 });
 
+function logging(req, res, next){
+    console.log("logging ");
+    res.json({message:"value"})
+    next();
+    
+}
+
+function auth(req, res, next){
+    console.log("auth ");
+    next();
+}
+
+app.get(API_URI + "/stories", auth, logging, (req, res, next)=>{
+    res.json({});
+});
+
+app.post(API_URI + '/upload', upload.single("profilephoto"), (req, res, next)=>{
+    res.status(200).json({message: "upload ok!"});
+});
 
 app.get(API_URI +  "/books/:bookId", (req, res)=>{
     console.log("/books params !");
