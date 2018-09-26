@@ -3,6 +3,7 @@ const express =  require("express"),
       mysql = require("mysql"),
       cors = require('cors'),
       multer = require('multer'),  
+      request = require('request'),
       bodyParser = require("body-parser");
 
 var app = express();
@@ -31,6 +32,8 @@ const sqlFindAllFilms = "SELECT * FROM film";
 
 const sqlFindAllBooks = "SELECT * FROM books WHERE (name LIKE ?) || (author LIKE ?) LIMIT ? OFFSET ?"
 const sqlFindOneBook = "SELECT idbooks, name, author, publish_year, isbn FROM books WHERE idbooks=? ";
+const sqlFindCityOnWeatherTable = "SELECT city FROM weather where country = ?"
+
 console.log("DB USER : " + process.env.DB_USER);
 console.log("DB NAME : " + process.env.DB_NAME);
 console.log(__dirname);
@@ -75,6 +78,7 @@ var makeQuery = (sql, pool)=>{
 var findAllFilms = makeQuery(sqlFindAllFilms, pool);
 var findOneBookById = makeQuery(sqlFindOneBook, pool);
 var findAllBooks = makeQuery(sqlFindAllBooks, pool);
+var findCityOnWeatherTable = makeQuery(sqlFindCityOnWeatherTable, pool);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -115,6 +119,23 @@ app.get(API_URI + "/stories", auth, logging, (req, res, next)=>{
 
 app.post(API_URI + '/upload', upload.single("profilephoto"), (req, res, next)=>{
     res.status(200).json({message: "upload ok!"});
+});
+
+
+app.get(API_URI + "/get-weather", (req, res)=>{
+    let countryCode = req.query.country;
+    findCityOnWeatherTable([countryCode]).then((results)=>{
+        console.log(results);
+        //res.json(results);
+        let OPENWEATHER_API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${results[0].city}&APPID=476e23fe1116f4e69d2a3e68672604e1`
+        request(OPENWEATHER_API_URL, (error, response, body)=>{
+            console.log(body);
+            var b = JSON.parse(body);
+            res.json(b);
+        })
+    }).catch((error)=>{
+        res.status(500).json(error);
+    })
 });
 
 app.get(API_URI +  "/books/:bookId", (req, res)=>{
