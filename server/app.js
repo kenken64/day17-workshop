@@ -59,7 +59,6 @@ var makeQuery = (sql, pool)=>{
                     return;
                 }
                 console.log(args);
-                
                 connection.query(sql, args || [], (err, results)=>{
                     connection.release();
                     if(err){
@@ -142,7 +141,7 @@ app.get(API_URI +  "/books/:bookId", (req, res)=>{
     console.log("/books params !");
     let bookId = req.params.bookId;
     console.log(bookId);
-    findOneBookById([parseInt(bookId)]).then((results)=>{
+    findOneBookById([parseInt(bookId)], "test").then((results)=>{
         console.log(results);
         res.json(results);
     }).catch((error)=>{

@@ -1,3 +1,5 @@
+<div fxLayout="column" fxLayoutAlign="start right" fxLayoutGap="60px">
+<div>
 <mat-form-field>
     <mat-select placeholder="selection type" [(ngModel)]="selectionType">
       <mat-option *ngFor="let select of selections" value="{{select.value}}">
@@ -11,9 +13,27 @@
 </mat-form-field>
 <br>
 <button mat-raised-button color="primary" (click)="search()">Search</button>
-<div>
-  <ul *ngFor="let book of books">
-    <li>{{book.name}}</li>
-  </ul>
 </div>
+
+<div>
+  <table matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
+   
+    <tr>
+      <th mat-sort-header="name">Book Name</th>
+      <th mat-sort-header="author">Author</th>
+      <th mat-sort-header="publish_year">Publish Year</th>
+      <th mat-sort-header="isbn">ISBN</th>
+    </tr>
+    <tr *ngFor="let element of sortedData">
+      <td>{{element.name}}</td>
+      <td>{{element.author}}</td>
+      <td>{{element.publish_year}}</td>
+      <td>{{element.isbn}}</td>
+    </tr>
+    
+  </table>
+  
+</div>
+</div>
+
 
