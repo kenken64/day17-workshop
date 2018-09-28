@@ -23,7 +23,7 @@ export class AppComponent implements OnInit{
 
   searchCriteria = {
     'offset':0,
-    'limit':5,
+    'limit':10,
     'keyword': '',
     'selectionType': ''
   }
